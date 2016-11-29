@@ -3,16 +3,22 @@
  */
 public class Player {
     String usename;
+    String pass;
     String email;
     int agent;
     String fname;
     String lname;
     String city;
     int country;
-    int street;
     String adress;
     int phone;
     int gender;
+
+
+    public String getPass() {
+        return pass;
+    }
+
 
     public String getEmail() {
         return email;
@@ -42,9 +48,7 @@ public class Player {
         return country;
     }
 
-    public int getStreet() {
-        return street;
-    }
+
 
     public String getAdress() {
         return adress;
@@ -62,13 +66,13 @@ public class Player {
     Player(int maxagent,int maxcountry){
         Randomizer rs = new Randomizer();
         usename=rs.generate();
+        pass=rs.generate();
         email=usename.concat("@mail.ru");
         fname=rs.generate();
         lname=rs.generate();
         city=rs.generate();
         agent=rs.randInt(1,maxagent);
-        country=rs.randInt(1,maxcountry);
-        street=rs.randInt(1,100);
+        country=rs.randInt(1,maxcountry);;
         adress=rs.generate();
         phone=rs.randInt(11111111,99999999);
         gender=rs.randInt(1,2);

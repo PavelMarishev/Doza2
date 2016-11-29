@@ -10,43 +10,52 @@ public class Tester {
     Boolean alrdyregistered=false;
     Player p;
     WebDriver wd;
+    WebElement password;
+    WebElement confpass;
     WebElement usename;
     WebElement fname;
     WebElement sname;
     WebElement email;
     WebElement city;
-    WebElement street;
     WebElement adress;
+    WebElement phone;
 
     Select dropagent;
     Select dropcountry;
     Select dropgender ;
 
     Tester(WebDriver w){
-        usename = wd.findElement(By.xpath("username"));
-        fname=wd.findElement(By.xpath("Fname"));
-        sname=wd.findElement(By.xpath("Sname"));
-        email = wd.findElement(By.xpath("email"));
-        city=wd.findElement(By.xpath("City"));
-        street=wd.findElement(By.xpath("Street"));
-        adress =wd.findElement(By.xpath("adress"));
-        dropagent = new Select(wd.findElement(By.xpath("Агент")));
-        dropcountry = new Select(wd.findElement(By.xpath("Страна")));
-        dropgender = new Select(wd.findElement(By.xpath("Gender")));
+        wd=w;
+        usename = wd.findElement(By.xpath(".//.[Contains(@name,\"login\")]"));
+        fname=wd.findElement(By.xpath(".//.[Contains(@name,\"fname\")]"));
+        sname=wd.findElement(By.xpath(".//.[Contains(@name,\"lname\")]"));
+        password=wd.findElement(By.xpath(".//*[Contains(@name,\"us_password\")]"));
+        confpass=wd.findElement(By.xpath(".//*[Contains(@name,\"confirm_password\")]"));
+        email = wd.findElement(By.xpath(".//*[Contains (@name,\"email\")]"));
+        city=wd.findElement(By.xpath(".//.[Contains(@name,\"city\")]"));
+        adress =wd.findElement(By.xpath(".//.[Contains(@name,\"address\")]"));
+        dropagent = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"owner_id\")]")));
+        dropcountry = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"country\")]")));
+        dropgender = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"gender\")]")));
+        phone=wd.findElement(By.xpath(".//.[Contains(@name,\"phone\")]"));
     }
     public void Writer(){
          p = new Player(dropagent.getOptions().size(),dropcountry.getOptions().size());
-         if(!alrdyregistered)email.sendKeys(p.getEmail());
+         if(!alrdyregistered){
+             email.sendKeys(p.getEmail());
+             password.sendKeys(p.getPass());
+             confpass.sendKeys(p.getPass());
+             alrdyregistered=true;
+         }
         usename.sendKeys(p.getUsename());
         fname.sendKeys(p.getFname());
         sname.sendKeys(p.getLname());
         city.sendKeys(p.getCity());
-        street.sendKeys(p.getCity());
         adress.sendKeys(p.getAdress());
+        phone.sendKeys(String.valueOf(p.getPhone()));
         dropagent.selectByIndex(p.getAgent());
         dropcountry.selectByIndex(p.getCountry());
         dropgender.selectByIndex(p.getGender());
-        alrdyregistered=true;
         wd.findElement(By.xpath("Save"));
         equals(wd.getTitle(),"Players");
     }
@@ -57,20 +66,20 @@ public class Tester {
         }
     }
     public void Checker(){
-        equals(email.getText(),p.getEmail());
-        equals(usename.getText(),p.getUsename());
-        equals(fname.getText(),p.getFname());
-        equals(sname.getText(),p.getLname());
-        equals(city.getText(),p.getCity());
-        equals(street.getText(),String.valueOf(p.getStreet()));
-        equals(adress.getText(),p.getAdress());
-        equals(String.valueOf(dropagent.getOptions().indexOf(dropagent.getFirstSelectedOption().getText())),String.valueOf(p.getAgent()));
-        equals(String.valueOf(dropcountry.getOptions().indexOf(dropcountry.getFirstSelectedOption().getText())),String.valueOf(p.getCountry()));
-        equals(String.valueOf(dropgender.getOptions().indexOf(dropgender.getFirstSelectedOption().getText())),String.valueOf(p.getGender()));
+        equals(email.getAttribute("value"),p.getEmail());
+        equals(usename.getAttribute("value"),p.getUsename());
+        equals(fname.getAttribute("value"),p.getFname());
+        equals(sname.getAttribute("value"),p.getLname());
+        equals(city.getAttribute("value"),p.getCity());
+        equals(adress.getAttribute("value"),p.getAdress());
+        equals(phone.getAttribute("value"),String.valueOf(p.getPhone()));
+        equals(String.valueOf(dropagent.getOptions().indexOf(dropagent.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getAgent()));
+        equals(String.valueOf(dropcountry.getOptions().indexOf(dropcountry.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getCountry()));
+        equals(String.valueOf(dropgender.getOptions().indexOf(dropgender.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getGender()));
     }
     public void OpenChanger(){
-        wd.findElement(By.xpath("User finding field")).sendKeys(p.getUsename());
-        wd.findElement(By.xpath("Find button")).click();
-        wd.findElement(By.xpath("Change but")).click();
+        wd.findElement(By.xpath(".//*[@id=\"filter_panel_filter__login\"]/input")).sendKeys(p.getUsename());
+        wd.findElement(By.xpath(".//*[@name=\"search\"]")).click();
+        wd.findElement(By.xpath(".//tr[.//a[text()=\""+p.getUsename()+"\"]]")).click();
     }
 }
