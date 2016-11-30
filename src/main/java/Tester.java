@@ -20,44 +20,69 @@ public class Tester {
     WebElement adress;
     WebElement phone;
 
+    String prevname;
+
     Select dropagent;
     Select dropcountry;
     Select dropgender ;
 
     Tester(WebDriver w){
         wd=w;
-        usename = wd.findElement(By.xpath(".//.[Contains(@name,\"login\")]"));
-        fname=wd.findElement(By.xpath(".//.[Contains(@name,\"fname\")]"));
-        sname=wd.findElement(By.xpath(".//.[Contains(@name,\"lname\")]"));
-        password=wd.findElement(By.xpath(".//*[Contains(@name,\"us_password\")]"));
-        confpass=wd.findElement(By.xpath(".//*[Contains(@name,\"confirm_password\")]"));
-        email = wd.findElement(By.xpath(".//*[Contains (@name,\"email\")]"));
-        city=wd.findElement(By.xpath(".//.[Contains(@name,\"city\")]"));
-        adress =wd.findElement(By.xpath(".//.[Contains(@name,\"address\")]"));
-        dropagent = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"owner_id\")]")));
-        dropcountry = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"country\")]")));
-        dropgender = new Select(wd.findElement(By.xpath(".//.[Contains(@name,\"gender\")]")));
-        phone=wd.findElement(By.xpath(".//.[Contains(@name,\"phone\")]"));
+        usename = wd.findElement(By.xpath(".//*[contains(@name,'login')]"));
+        fname=wd.findElement(By.xpath(".//*[contains(@name,'fname')]"));
+        sname=wd.findElement(By.xpath(".//*[contains(@name,'lname')]"));
+        password=wd.findElement(By.xpath(".//*[contains(@name,'us_password')]"));
+        confpass=wd.findElement(By.xpath(".//*[contains(@name,'confirm_password')]"));
+        email = wd.findElement(By.xpath(".//*[contains (@name,'email')]"));
+        city=wd.findElement(By.xpath(".//*[contains(@name,'city')]"));
+        adress =wd.findElement(By.xpath(".//*[contains(@name,'address')]"));
+        dropagent = new Select(wd.findElement(By.xpath(".//*[contains(@name,'owner_id')]")));
+        dropcountry = new Select(wd.findElement(By.xpath(".//*[contains(@name,'country')]")));
+        dropgender = new Select(wd.findElement(By.xpath(".//*[contains(@name,'gender')]")));
+        phone=wd.findElement(By.xpath(".//*[contains(@name,'phone')]"));
+    }
+    public void Init(){
+        usename = wd.findElement(By.xpath(".//*[contains(@name,'login')]"));
+        fname=wd.findElement(By.xpath(".//*[contains(@name,'fname')]"));
+        sname=wd.findElement(By.xpath(".//*[contains(@name,'lname')]"));
+        email = wd.findElement(By.xpath(".//*[contains (@name,'email')]"));
+        city=wd.findElement(By.xpath(".//*[contains(@name,'city')]"));
+        adress =wd.findElement(By.xpath(".//*[contains(@name,'address')]"));
+        dropagent = new Select(wd.findElement(By.xpath(".//*[contains(@name,'owner_id')]")));
+        dropcountry = new Select(wd.findElement(By.xpath(".//*[contains(@name,'country')]")));
+        dropgender = new Select(wd.findElement(By.xpath(".//*[contains(@name,'gender')]")));
+        phone=wd.findElement(By.xpath(".//*[contains(@name,'phone')]"));
+    }
+    public void Cleaner(){
+        fname.clear();
+        sname.clear();
+        city.clear();
+        phone.clear();
+        email.clear();
+        adress.clear();
+        phone.clear();
     }
     public void Writer(){
-         p = new Player(dropagent.getOptions().size(),dropcountry.getOptions().size());
+        Cleaner();
+         p = new Player(dropagent.getOptions().size(),dropcountry.getOptions().size(),alrdyregistered,prevname);
          if(!alrdyregistered){
-             email.sendKeys(p.getEmail());
              password.sendKeys(p.getPass());
+             usename.sendKeys(p.getUsename());
+             prevname=p.getUsename();
              confpass.sendKeys(p.getPass());
              alrdyregistered=true;
-         }
-        usename.sendKeys(p.getUsename());
+         }else Init();
+        email.sendKeys(p.getEmail());
         fname.sendKeys(p.getFname());
         sname.sendKeys(p.getLname());
         city.sendKeys(p.getCity());
         adress.sendKeys(p.getAdress());
         phone.sendKeys(String.valueOf(p.getPhone()));
-        dropagent.selectByIndex(p.getAgent());
-        dropcountry.selectByIndex(p.getCountry());
-        dropgender.selectByIndex(p.getGender());
-        wd.findElement(By.xpath("Save"));
-        equals(wd.getTitle(),"Players");
+        dropagent.selectByIndex(p.getAgent()-1);
+        dropcountry.selectByIndex(p.getCountry()-1);
+        dropgender.selectByIndex(p.getGender()-1);
+        wd.findElement(By.xpath(".//*[contains(@name,'button_save')]")).click();
+       equals(wd.getTitle(),"Players");
     }
     public void equals(String actual,String expec){
         if (expec.equals(actual)) System.out.println("PASS");
@@ -66,6 +91,7 @@ public class Tester {
         }
     }
     public void Checker(){
+        Init();
         equals(email.getAttribute("value"),p.getEmail());
         equals(usename.getAttribute("value"),p.getUsename());
         equals(fname.getAttribute("value"),p.getFname());
@@ -73,13 +99,11 @@ public class Tester {
         equals(city.getAttribute("value"),p.getCity());
         equals(adress.getAttribute("value"),p.getAdress());
         equals(phone.getAttribute("value"),String.valueOf(p.getPhone()));
-        equals(String.valueOf(dropagent.getOptions().indexOf(dropagent.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getAgent()));
-        equals(String.valueOf(dropcountry.getOptions().indexOf(dropcountry.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getCountry()));
-        equals(String.valueOf(dropgender.getOptions().indexOf(dropgender.getFirstSelectedOption().getAttribute("value"))),String.valueOf(p.getGender()));
     }
     public void OpenChanger(){
+        wd.findElement(By.xpath(".//*[@id=\"filter_panel_filter__login\"]/input")).clear();
         wd.findElement(By.xpath(".//*[@id=\"filter_panel_filter__login\"]/input")).sendKeys(p.getUsename());
         wd.findElement(By.xpath(".//*[@name=\"search\"]")).click();
-        wd.findElement(By.xpath(".//tr[.//a[text()=\""+p.getUsename()+"\"]]")).click();
+        wd.findElement(By.xpath(".//tr[.//a[text()='"+p.getUsename()+"']]/td[@width=16]")).click();
     }
 }

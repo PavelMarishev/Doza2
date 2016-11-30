@@ -62,17 +62,17 @@ public class Player {
         return gender;
     }
 
-
-    Player(int maxagent,int maxcountry){
+    Player(int maxagent,int maxcountry,boolean reg,String prevname){
         Randomizer rs = new Randomizer();
-        usename=rs.generate();
+        if(!reg)usename=rs.generate();
+        else usename=prevname;
         pass=rs.generate();
-        email=usename.concat("@mail.ru");
+        email=rs.generate().concat("@mail.ru");
         fname=rs.generate();
         lname=rs.generate();
         city=rs.generate();
         agent=rs.randInt(1,maxagent);
-        country=rs.randInt(1,maxcountry);;
+        country=rs.randInt(1,maxcountry);
         adress=rs.generate();
         phone=rs.randInt(11111111,99999999);
         gender=rs.randInt(1,2);

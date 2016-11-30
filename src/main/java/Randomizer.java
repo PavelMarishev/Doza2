@@ -4,7 +4,7 @@
 import java.util.Random;
 public class Randomizer {
     char[] chars;
-    Random rand;
+    Random rand=new Random();
     public Randomizer(){
         chars = "abcdefghijklmnopqrstuvwxyz1234567890".toCharArray();
     }
